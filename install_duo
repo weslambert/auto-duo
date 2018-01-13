@@ -94,7 +94,7 @@ cp resources/filebeat/filebeat.yml /etc/filebeat/filebeat.yml
 
 else
 	echo
-	echo "Not configuring Filbeat for this machine."
+	echo "Not configuring Filebeat for this machine."
 fi
 
 echo
