@@ -1,0 +1,123 @@
+#!/bin/bash
+DUO_PATH="/opt/duo"
+DUO_CONFIG="/etc/duo"
+DUO_LOGS="/var/log/duo"
+
+echo
+echo "This script will configure your system to pull authentication logs from Duo's web API."
+echo "Would you like to continue with installation?"
+echo
+echo "If so, please type 'YES' and press [ENTER]:"
+read response
+if [ $response = "YES" ]; then 
+	:
+else
+	echo "Exiting..."
+	exit 0
+fi
+
+# Check if pip installed
+if dpkg -l | grep -q python-pip; then
+	echo "pip already installed!"
+	:
+else
+	apt-get install python-pip -y
+fi
+
+# Install Duo client
+pip install duo_client
+
+# Copying Duo files
+[ ! -d $DUO_LOGS ] && mkdir $DUO_LOGS
+[ ! -d $DUO_CONFIG ] && mkdir $DUO_CONFIG
+[ ! -d $DUO_PATH ] && mkdir $DUO_PATH
+
+if [ -d resources ]; then
+	cp resources/duo/report_user_auth_json.py $DUO_PATH 
+	cp resources/duo/duo.conf $DUO_CONFIG/duo.conf
+	cp resources/duo/duo_pull /etc/cron.d/duo_pull
+	chmod +x /etc/cron.d/duo_pull
+else
+	echo "Directory './resources' not found!"
+	echo
+	exit 0
+fi
+
+
+if [ -f $DUO_CONFIG/duo.conf ]; then
+
+	echo
+	echo "What is the Duo host from which you would like to pull logs?"
+	read host
+	sed -i "s/host.*/host = $host/" $DUO_CONFIG/duo.conf
+
+	echo
+	echo "Please provide an integration key and press [ENTER]:"
+	read -s ikey
+	sed -i "s/ikey.*/ikey = $ikey/" $DUO_CONFIG/duo.conf
+	
+	echo
+	echo "Please provide a secret key and press [ENTER]: "
+	read -s skey
+	sed -i "s/skey.*/skey = $skey/" $DUO_CONFIG/duo.conf
+else
+	echo "Config file not found!  Exiting..."
+	exit 0
+fi
+
+# Install Filbeat, if necessary.
+echo "Would you like to install Filebeat on this machine?"
+echo
+echo "If so, please type "YES" and press [ENTER]:"
+read response
+if [ $response = "YES" ]; then
+
+FB_CONFIG="/etc/filebeat"
+
+# Download and install Filebeat
+if grep -q filebeat-5.6.5-amd64.deb; then
+	echo "Filebeat deb already downloaded!"
+	:
+else
+	curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-5.6.5-amd64.deb
+fi
+
+if dpkg -l | grep -q filebeat; then
+	echo "Filebeat already installed!"
+	:
+else
+	dpkg -i filebeat-5.6.5-amd64.deb
+fi
+
+# Copy config
+cp resources/filebeat/filebeat.yml /etc/filebeat/filebeat.yml
+
+else
+	echo
+	echo "Not configuring Filbeat for this machine."
+fi
+
+echo
+echo "Installation complete!"
+echo
+echo "You will need to un-remark the last line in /etc/cron.d/duo_pull"
+echo "for the cron job to run (when you are ready)."
+echo
+echo "It is recommended to test the log pull with the following command before"
+echo "enabling the cron job."
+echo
+echo "sudo python /opt/duo/report_user_auth_json.py -m 1"
+echo
+echo "The -m argument tells the script (in minutes) how far back to go when pullng logs." 
+echo
+echo "By default, the cron job will run the script so that it pulls"
+echo "the last minute of logs from Duo's Admin API."
+echo
+echo "To change this value, edit the value for the '-m' argument in /etc/cron.d/duo_pull."
+echo
+echo "Logs are written to /var/log/duo/duo_auth.json and are overwritten each"
+echo "time the report script is run."
+echo
+echo "Keep in mind, you will need to add the config file(s) in resources/logstash/"
+echo "to the Logstash configuration on the receiving machine (in addition to a beats input file, if not already present)."
+echo
