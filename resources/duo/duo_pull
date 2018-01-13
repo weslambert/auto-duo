@@ -5,4 +5,4 @@
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
-#* * * * * root python /opt/duo/report_user_auth_json.py >> /dev/null 2>&1
+#* * * * * root python /opt/duo/report_user_auth_json.py -m 1 >> /dev/null 2>&1
