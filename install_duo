@@ -47,7 +47,7 @@ fi
 if [ -f $DUO_CONFIG/duo.conf ]; then
 
 	echo
-	echo "What is the Duo API host from which you would like to pull logs?"
+	echo "What is the Duo host from which you would like to pull logs?"
 	read host
 	sed -i "s/host.*/host = $host/" $DUO_CONFIG/duo.conf
 
@@ -94,7 +94,7 @@ cp resources/filebeat/filebeat.yml /etc/filebeat/filebeat.yml
 
 else
 	echo
-	echo "Not configuring Filebeat for this machine."
+	echo "Not configuring Filbeat for this machine."
 fi
 
 echo
@@ -104,11 +104,11 @@ echo "You will need to un-remark the last line in /etc/cron.d/duo_pull"
 echo "for the cron job to run (when you are ready)."
 echo
 echo "It is recommended to test the log pull with the following command before"
-echo "enabling the cron job."
+echo "enabling the cron job:"
 echo
 echo "sudo python /opt/duo/report_user_auth_json.py -m 1"
 echo
-echo "The -m argument tells the script (in minutes) how far back to go when pulling logs." 
+echo "The -m argument tells the script (in minutes) how far back to go when pullng logs." 
 echo
 echo "By default, the cron job will run the script so that it pulls"
 echo "the last minute of logs from Duo's Admin API."
@@ -120,4 +120,7 @@ echo "time the report script is run."
 echo
 echo "Keep in mind, you will need to add the config file(s) in resources/logstash/"
 echo "to the Logstash configuration on the receiving machine (in addition to a beats input file, if not already present)."
+echo
+echo "Last, Filebeat should be started with the following command:"
+echo "sudo service filebeat start"
 echo
