@@ -47,7 +47,7 @@ fi
 if [ -f $DUO_CONFIG/duo.conf ]; then
 
 	echo
-	echo "What is the Duo host from which you would like to pull logs?"
+	echo "What is the Duo API host from which you would like to pull logs?"
 	read host
 	sed -i "s/host.*/host = $host/" $DUO_CONFIG/duo.conf
 
