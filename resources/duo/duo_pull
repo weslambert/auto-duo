@@ -1,0 +1,8 @@
+# /etc/cron.d/duo_pull
+#
+# crontab entry to pull in Duo authentication logs
+
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+#* * * * * root python /opt/duo/report_user_auth_json.py >> /dev/null 2>&1
