@@ -108,7 +108,7 @@ echo "enabling the cron job."
 echo
 echo "sudo python /opt/duo/report_user_auth_json.py -m 1"
 echo
-echo "The -m argument tells the script (in minutes) how far back to go when pullng logs." 
+echo "The -m argument tells the script (in minutes) how far back to go when pulling logs." 
 echo
 echo "By default, the cron job will run the script so that it pulls"
 echo "the last minute of logs from Duo's Admin API."
