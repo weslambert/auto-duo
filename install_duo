@@ -75,18 +75,18 @@ if [ $response = "YES" ]; then
 FB_CONFIG="/etc/filebeat"
 
 # Download and install Filebeat
-if grep -q filebeat-5.6.5-amd64.deb; then
+if grep -q filebeat-6.2.4-amd64.deb; then
 	echo "Filebeat deb already downloaded!"
 	:
 else
-	curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-5.6.5-amd64.deb
+	curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-amd64.deb
 fi
 
 if dpkg -l | grep -q filebeat; then
 	echo "Filebeat already installed!"
 	:
 else
-	dpkg -i filebeat-5.6.5-amd64.deb
+	dpkg -i filebeat-6.2.4-amd64.deb
 fi
 
 # Copy config
