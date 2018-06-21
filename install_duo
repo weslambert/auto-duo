@@ -75,7 +75,7 @@ if [ $response = "YES" ]; then
 FB_CONFIG="/etc/filebeat"
 
 # Download and install Filebeat
-if grep -q filebeat-6.2.4-amd64.deb; then
+if ls filebeat-6.2.4-amd64.deb; then
 	echo "Filebeat deb already downloaded!"
 	:
 else
